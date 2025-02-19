@@ -71,10 +71,10 @@ npm run start:dev
 
 ### Production Mode
 First, compile the TypeScript code:
-```bash
+```
 npm run build:prod
 Then start the server:
-```bash
+```
 npm run start:prod
 
 ### Future Plans
