@@ -68,3 +68,17 @@ This project includes:
 To run the project in development mode with live reloading, use:
 ```bash
 npm run start:dev
+
+### Production Mode
+First, compile the TypeScript code:
+```bash
+npm run build:prod
+Then start the server:
+```bash
+npm run start:prod
+
+### Future Plans
+Integrate file upload endpoints for PDFs and audio files.
+Implement text-to-speech and speech-to-text functionalities.
+Add AI-powered Q&A capabilities.
+Enhance security with additional features like token blacklisting.
