@@ -33,7 +33,10 @@ export const processAudioFile = async (req: Request): Promise<string> => {
         return reject(new Error("No file uploaded"));
       }
       try {
+        console.log("Reading audio file from path:", req.file.path);
         const audioBuffer = fs.readFileSync(req.file.path);
+
+        console.log("File read successfully, calling Wit.ai...");
         const response = await axios.post(
           "https://api.wit.ai/message?v=20250221&q=i%20did%20like%20a%20Audio%20to%20Text%20Conversion",
           audioBuffer,

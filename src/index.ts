@@ -2,8 +2,9 @@ import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import { connectDB } from './config/databaseConfig';
-
-
+import { userRouter } from "./routes/userRoute";
+import audioRouter from "./routes/audioRoute";
+import pdfRouter from "./routes/pdfRoute";
 
 dotenv.config();
 
@@ -12,6 +13,10 @@ const PORT = process.env.PORT;
 
 app.use(express.json());
 app.use(cors());
+
+app.use("/api/users", userRouter);
+app.use("/api/audio", audioRouter);
+app.use("/api/pdf", pdfRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the PDF & Audio Converter API!");
