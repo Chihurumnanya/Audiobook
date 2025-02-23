@@ -58,8 +58,6 @@ export const signupUser = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-// Logout handler: For JWT, logout is usually handled client-side.
-// This simply returns a success message.
 export const logoutUser = async (req: Request, res: Response): Promise<void> => {
   res.status(200).json({ success: "Logout successful" });
   return;
