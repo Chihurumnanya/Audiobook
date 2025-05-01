@@ -6,6 +6,7 @@ import { userRouter } from "./routes/userRoute";
 import audioRouter from "./routes/audioRoute";
 import pdfRouter from "./routes/pdfRoute";
 
+
 dotenv.config();
 
 const app = express();
@@ -17,6 +18,7 @@ app.use(cors());
 app.use("/api/users", userRouter);
 app.use("/api/audio", audioRouter);
 app.use("/api/pdf", pdfRouter);
+
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the PDF & Audio Converter API!");

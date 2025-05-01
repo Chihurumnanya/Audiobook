@@ -3,12 +3,14 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 import axios from "axios";
+import dotenv from "dotenv";
 import { Document } from "../models/fileModel";
+dotenv.config();
 
 const UPLOADS_DIR = path.join(__dirname, "../Documents/audioUploads");
 
 if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR);
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
 const storage = multer.diskStorage({
@@ -36,14 +38,14 @@ export const processAudioFile = async (req: Request): Promise<string> => {
         console.log("Reading audio file from path:", req.file.path);
         const audioBuffer = fs.readFileSync(req.file.path);
 
-        console.log("File read successfully, calling Wit.ai...");
+        console.log("File read successfully, calling Hugging Face...");
         const response = await axios.post(
-          "https://api.wit.ai/message?v=20250221&q=i%20did%20like%20a%20Audio%20to%20Text%20Conversion",
+          "https://api-inference.huggingface.co/models/openai/whisper-large",
           audioBuffer,
           {
             headers: {
-              "Content-Type": "audio/mpeg",
-              "Authorization": `Bearer ${process.env.WIT_AI_TOKEN}`,
+              "Authorization": `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+              "Content-Type": "audio/mpeg", 
             },
           }
         );
