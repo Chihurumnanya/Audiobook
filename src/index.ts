@@ -5,6 +5,9 @@ import { connectDB } from './config/databaseConfig';
 import { userRouter } from "./routes/userRoute";
 import audioRouter from "./routes/audioRoute";
 import pdfRouter from "./routes/pdfRoute";
+import { textToAudioRouter } from "./routes/textToAudioRoute";
+import { aiRouter } from "./routes/AiRoute";
+
 
 
 dotenv.config();
@@ -18,7 +21,8 @@ app.use(cors());
 app.use("/api/users", userRouter);
 app.use("/api/audio", audioRouter);
 app.use("/api/pdf", pdfRouter);
-
+app.use("/api/convert", textToAudioRouter);
+app.use("/api/Ai", aiRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the PDF & Audio Converter API!");

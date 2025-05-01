@@ -24,7 +24,7 @@ const handleConvertRequest = async (req: any, res: any) => {
 };
 
 // Assign the handler to the route
-textToAudioRouter.post('/convert', handleConvertRequest);
+textToAudioRouter.post('/convert-to-audio', handleConvertRequest);
 
 // Export the router
 export { textToAudioRouter };

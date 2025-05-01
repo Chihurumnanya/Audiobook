@@ -1,84 +1,167 @@
-# Audiobook
+# 🎧 Audiobook API
 
-Audiobook is a TypeScript-based API project designed to serve as a foundation for a multimedia application. The goal is to eventually provide services like converting PDFs or text to audio, translating audio to text, and even answering questions using AI. For now, the core focus is on secure user authentication, built with modern tools and best practices.
+Audiobook is a **TypeScript-based backend API** built to serve as the foundation for an intelligent multimedia application. The API provides functionality for converting text (typed or from a PDF) into audio, managing users securely, and preparing for advanced AI features like audio transcription and question answering.
 
-## Project Overview
+This is more than just a text-to-speech converter—it's a scalable, modular system designed with clean architecture and future AI integration in mind.
 
-This project includes:
-- **User Authentication:** Users can sign up, log in, and log out.
-- **Database Integration:** Uses PostgreSQL (with Sequelize ORM) to store user data.
-- **Password Security:** Passwords are hashed using bcrypt.
-- **Token-Based Auth:** JWTs are used for stateless authentication (tokens expire after 30 days).
+---
 
-## What I Did
+## 🚀 Features Implemented
 
-### 1. Project Initialization
-- **Directory Setup & NPM Initialization:**  
- I initialized it with `npm init -y` to generate a `package.json`.
-  
-- **Installing Dependencies:**  
-  I installed essential packages:
-  - **Express & CORS:** For building the web server and handling cross-origin requests.
-  - **dotenv:** To manage environment variables.
-  - **Sequelize & pg:** To connect and interact with a PostgreSQL database.
-  - **bcrypt:** For securely hashing passwords.
-  - **jsonwebtoken:** To create and verify JWT tokens.
-  
-  We also installed TypeScript and related tools (ts-node, nodemon, and type definitions) for a type-safe development environment.
+### ✅ 1. User Authentication
 
-### 2. TypeScript Configuration
-- I set up TypeScript by running `npx tsc --init` and created additional config files (`tsconfig.dev.json` and `tsconfig.prod.json`) to handle different build environments.
-- These configurations ensure our code compiles correctly for both development and production.
+- **JWT-based authentication** with token expiration.
+- **Password hashing** using `bcrypt` for security.
+- Signup, login, and logout endpoints built using a **service-based architecture**.
+- User data stored in **PostgreSQL** using **Sequelize ORM**.
+- User model includes `soft delete` capability.
 
-### 3. Database Configuration with Sequelize
-- **PostgreSQL Setup:**  
-  Using environment variables in a `.env` file (e.g., `DB_URL_DEV`, `DB_HOST`, etc.), I connected to our local PostgreSQL database.
-  
-- **Sequelize Integration:**  
-  In `/src/config/databaseConfig.ts`, I configured Sequelize to establish a connection to PostgreSQL. This file is responsible for authenticating the connection and handling any connection errors.
+---
 
-### 4. User Model Creation
-- In `/src/models/userModel.ts`, we defined the `User` model using Sequelize.  
-  This model includes:
-  - **id:** A UUID that uniquely identifies each user.
-  - **name, phone_number, email, password:** Essential user data.
-  - **deleted:** A boolean flag to mark if a user has been "soft-deleted".
-  
-  The model syncs with the PostgreSQL database, ensuring that the necessary table is created or updated as needed.
+### ✅ 2. PDF Upload and Parsing
 
-### 5. Password and Token Utilities
-- **Password Hashing:**  
-  In `/src/config/bcrypt.ts`, I implemented functions to hash and verify passwords using bcrypt. This ensures that user passwords are stored securely.
-  
-- **JWT Token Generation:**  
-  In `/src/config/token.ts`, I created functions to generate and verify JWT tokens. Tokens are set to expire in 30 days, providing secure, stateless authentication. These tokens will be used to authenticate API requests.
+- Users can upload PDF files.
+- Extracted text from PDFs is available for further processing.
+- Used `pdf-parse` to extract textual content from uploaded files.
 
-### 6. User Service Implementation
-- **User Service:**  
-  Instead of controllers, I built a user service in `/src/services/userService.ts` that directly handles:
-  - **Signup:** Validates user data, checks for existing users, hashes the password, creates a new user, and generates a JWT token.
-  - **Login:** Verifies user credentials, compares passwords, and returns a JWT token upon successful login.
-  - **Logout:** For JWT-based authentication, logout is typically managed by the client discarding the token (but we provide a placeholder endpoint).
-  
-  The service functions use Express’s `req` and `res` objects directly, making it straightforward to integrate them into your route definitions.
+---
 
-## Running the Project
+### ✅ 3. Audio Upload and Management
 
-### Development Mode
-To run the project in development mode with live reloading, use:
+- Users can upload `.wav` audio files.
+- Uploaded audio is stored in the filesystem and metadata saved in the database.
+- Files are processed via **Multer** middleware.
+- Sequelize model for `UploadedAudio` tracks metadata like filename, path, and uploader.
+
+---
+
+### ✅ 4. Text-to-Audio Conversion (Text-to-Speech)
+
+- Converts raw text into `.wav` audio using a TTS engine (e.g., Node `gtts`, or any TTS module).
+- Generated audio is saved and stored in the filesystem.
+- Sequelize model for `GeneratedAudio` stores metadata like:
+  - File path
+  - Original text
+  - User ID
+- Endpoint: `POST /api/textToAudio/convert-to-text-audio`
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer             | Technology                             |
+|------------------|----------------------------------------|
+| Language          | TypeScript                             |
+| Server Framework  | Express.js                             |
+| ORM               | Sequelize                              |
+| Database          | PostgreSQL                             |
+| Auth              | JWT + bcrypt                           |
+| File Upload       | Multer                                 |
+| PDF Parsing       | `pdf-parse`                            |
+| Audio Generation  | Text-to-Speech engine (`gtts`/TTS lib) |
+| AI Tools (WIP)    | Hugging Face + LangChain.js (future)   |
+
+---
+
+## 🔧 Folder Structure
+
+```
+/src
+ ├── config/             # DB, auth, and hashing configs
+ ├── models/             # Sequelize models (User, Audio, PDF)
+ ├── routes/             # All route definitions
+ ├── services/           # Core business logic
+ ├── documents/            # Stored files (audio, PDF)
+ └── utils/              # (Optional: helper functions)
+```
+
+---
+
+## 🔐 Authentication Flow
+
+1. **User signs up** → password hashed → saved in DB.
+2. JWT token generated and returned.
+3. Protected endpoints require token in `Authorization` header.
+4. Token expires after 30 days.
+
+---
+
+## 📦 Project Setup & Usage
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/Chihurumnanya/Audiobook.git
+cd Audiobook
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up environment variables
+
+Create a `.env` file based on `.env.example`:
+
+```env
+PORT=5000
+DB_NAME=audiobook_db
+DB_USER=your_db_user
+DB_PASSWORD=your_db_password
+DB_HOST=localhost
+JWT_SECRET=your_jwt_secret
+```
+
+### 4. Run the project
+
+#### Development
+
 ```bash
 npm run start:dev
 ```
-### Production Mode
-First, compile the TypeScript code:
-```
-npm run build:prod
-Then start the server:
 
+#### Production
+
+```bash
+npm run build:prod
 npm run start:prod
 ```
-### Future Plans
-Integrate file upload endpoints for PDFs and audio files.
-Implement text-to-speech and speech-to-text functionalities.
-Add AI-powered Q&A capabilities.
-Enhance security with additional features like token blacklisting.
+
+---
+
+## 📌 Endpoints Overview
+
+| Method | Endpoint                                 | Description                         |
+|--------|------------------------------------------|-------------------------------------|
+| POST   | `/api/users/signup`                      | Register a new user                 |
+| POST   | `/api/users/login`                       | Log in and receive a JWT            |
+| GET    | `/api/users/profile`                     | (Future) Get logged-in user profile |
+| POST   | `/api/audio/upload-audio`                | Upload audio file                   |
+| POST   | `/api/pdf/upload-pdf`                    | Upload PDF and extract text         |
+| POST   | `api/convert/convert-to-audio`           | Convert text to audio               |
+
+---
+
+## 📈 What's Next
+
+Here’s what I plan to implement next to evolve Audiobook:
+
+- **🎤 Audio-to-Text (Transcription):** Using Hugging Face models to transcribe uploaded audio.
+- **🤖 AI Q&A System:** Ask questions based on uploaded or transcribed content using LangChain.js.
+- **📊 Analytics Dashboard:** Admin dashboard to view user activity and content stats.
+- **🔒 Token Blacklisting:** Enhance JWT logout by maintaining a denylist.
+- **🌍 Translation Support:** Translate text or audio into other languages using AI.
+
+---
+
+## 🙌 Contributing
+
+This is a personal learning and portfolio project. If you’d like to collaborate, feel free to fork and submit a pull request.
+
+---
+
+## 🧠 Inspiration
+
+This API is designed with future AI integration in mind and is part of my preparation for applying to international AI and backend internships (e.g., **RISE Germany**, **HZB**, **HZDR**, etc.).
